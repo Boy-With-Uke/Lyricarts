@@ -2,23 +2,24 @@
 
 namespace App\Form;
 
-use App\Entity\Songs;
+use App\Entity\Album;
+use App\Entity\Author;
+use App\Entity\Categorie;
+use App\Entity\Song;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\File;
 
-class SongsType extends AbstractType
+class SongType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('name')
-            ->add('author')
-            ->add('album')
-            ->add('year')
-            ->add('categorie')
+            ->add('content')
             ->add('image_path', FileType::class, [
                 'mapped' => false,
 
@@ -37,16 +38,27 @@ class SongsType extends AbstractType
                             'image/png',
                         ],
                         'mimeTypesMessage' => 'Please upload a valid Picture',
-                    ])
+                    ]),
                 ]])
-            ->add('content')
+            ->add('author', EntityType::class, [
+                'class' => Author::class,
+                'choice_label' => 'name',
+            ])
+            ->add('album', EntityType::class, [
+                'class' => Album::class,
+                'choice_label' => 'name',
+            ])
+            ->add('categorie', EntityType::class, [
+                'class' => Categorie::class,
+                'choice_label' => 'name',
+            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Songs::class,
+            'data_class' => Song::class,
         ]);
     }
 }

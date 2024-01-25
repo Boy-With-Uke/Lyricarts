@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CategorieRepository;
+use App\Repository\AlbumRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CategorieRepository::class)]
-class Categorie
+#[ORM\Entity(repositoryClass: AlbumRepository::class)]
+class Album
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,7 +18,10 @@ class Categorie
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: Song::class)]
+    #[ORM\ManyToOne(inversedBy: 'albums')]
+    private ?Author $author = null;
+
+    #[ORM\OneToMany(mappedBy: 'album', targetEntity: Song::class)]
     private Collection $songs;
 
     public function __construct()
@@ -43,6 +46,18 @@ class Categorie
         return $this;
     }
 
+    public function getAuthor(): ?Author
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?Author $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Song>
      */
@@ -55,7 +70,7 @@ class Categorie
     {
         if (!$this->songs->contains($song)) {
             $this->songs->add($song);
-            $song->setCategorie($this);
+            $song->setAlbum($this);
         }
 
         return $this;
@@ -65,8 +80,8 @@ class Categorie
     {
         if ($this->songs->removeElement($song)) {
             // set the owning side to null (unless already changed)
-            if ($song->getCategorie() === $this) {
-                $song->setCategorie(null);
+            if ($song->getAlbum() === $this) {
+                $song->setAlbum(null);
             }
         }
 

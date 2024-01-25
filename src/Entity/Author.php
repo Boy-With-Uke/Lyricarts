@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\CategorieRepository;
+use App\Repository\AuthorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CategorieRepository::class)]
-class Categorie
+#[ORM\Entity(repositoryClass: AuthorRepository::class)]
+class Author
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,11 +18,15 @@ class Categorie
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: Song::class)]
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Album::class)]
+    private Collection $albums;
+
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Song::class)]
     private Collection $songs;
 
     public function __construct()
     {
+        $this->albums = new ArrayCollection();
         $this->songs = new ArrayCollection();
     }
 
@@ -44,6 +48,36 @@ class Categorie
     }
 
     /**
+     * @return Collection<int, Album>
+     */
+    public function getAlbums(): Collection
+    {
+        return $this->albums;
+    }
+
+    public function addAlbum(Album $album): static
+    {
+        if (!$this->albums->contains($album)) {
+            $this->albums->add($album);
+            $album->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAlbum(Album $album): static
+    {
+        if ($this->albums->removeElement($album)) {
+            // set the owning side to null (unless already changed)
+            if ($album->getAuthor() === $this) {
+                $album->setAuthor(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Song>
      */
     public function getSongs(): Collection
@@ -55,7 +89,7 @@ class Categorie
     {
         if (!$this->songs->contains($song)) {
             $this->songs->add($song);
-            $song->setCategorie($this);
+            $song->setAuthor($this);
         }
 
         return $this;
@@ -65,8 +99,8 @@ class Categorie
     {
         if ($this->songs->removeElement($song)) {
             // set the owning side to null (unless already changed)
-            if ($song->getCategorie() === $this) {
-                $song->setCategorie(null);
+            if ($song->getAuthor() === $this) {
+                $song->setAuthor(null);
             }
         }
 
