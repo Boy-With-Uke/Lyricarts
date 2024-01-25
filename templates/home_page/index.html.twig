@@ -1,0 +1,25 @@
+{# templates/root.html.twig #}
+{% extends '/layouts/base.html.twig' %}
+
+{% block title %}Bienvenue!!
+{% endblock %}
+
+{% block stylesheets %}
+{{ encore_entry_link_tags('root') }}
+{% endblock %}
+{% block body %}
+
+	<div id="h1_div">
+		<h1>Welcome to my lyrics manager</h1>
+	</div>
+    <div id="titre_div">
+		<h2>LyricArts</h2>
+	</div>
+	<div id="about_div">
+		<p>Where your words take senses and your thoughts are accepted...</p>
+	</div>
+	<div id="button_div">
+		<button onclick="window.location.href='{{path("app_register")}}';">Get Started</button>
+	</div>
+	
+{% endblock %}

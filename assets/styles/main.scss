@@ -1,0 +1,81 @@
+@import "~bootstrap/scss/bootstrap";
+@import url("https://fonts.cdnfonts.com/css/avenir");
+@font-face {
+  font-family: "Renitah";
+  src: url("/public/fonts/Renitah.woff") format("woff");
+  /* Ajoutez d'autres formats si nécessaire */
+  font-weight: normal;
+  font-style: normal;
+}
+
+html,body {
+    /*display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;*/
+    min-height: 100vh;
+    margin: 0;
+    border: none;
+    background-image: url("/public/images/background-image.jpg");
+    background-size: cover;
+    background-position: fill;
+    background-repeat: no-repeat;
+    font-family: "Avenir", sans-serif;
+  }
+  .container {
+    max-width: 2000px;
+    margin: 0 auto;
+    height: 80vh;
+    overflow: auto;
+    background: transparent;
+    backdrop-filter: blur(15px);
+  }
+  a {
+    text-decoration: none;
+    font-family:"Renitah";
+  }
+  .card {
+    
+    background: transparent;
+    backdrop-filter: blur(15px);
+    margin-top: 1rem;
+    text-align: center;
+    border-radius: 10px;
+    border: solid rgb(211, 211, 211);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-img-top {
+    max-width: 100px;
+    max-height: 200px;
+    object-fit: cover;
+  }
+  
+  .card-body {
+    background: transparent;
+    backdrop-filter: blur(15px);
+    padding: 1rem;
+  }
+  
+  .nav-bar {
+    border: solid red;
+    height: 70px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(15px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    background: transparent;
+    backdrop-filter: blur(15px);
+    border-radius: 5px;
+  }
+
+  .my-3{
+    margin-bottom: 1rem !important;
+  }
