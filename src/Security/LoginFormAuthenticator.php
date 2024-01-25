@@ -49,7 +49,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         // return new RedirectResponse($this->urlGenerator->generate('some_route'));
         flash()->addInfo('You are now Connected');
 
-        return new RedirectResponse($this->urlGenerator->generate('app_songs_index'));
+        return new RedirectResponse($this->urlGenerator->generate('app_song_index'));
 
     }
 

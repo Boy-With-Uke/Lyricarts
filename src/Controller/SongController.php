@@ -8,55 +8,77 @@ use App\Repository\SongRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/song')]
 class SongController extends AbstractController
 {
+
     #[Route('/', name: 'app_song_index', methods: ['GET'])]
-    public function index(SongRepository $songRepository): Response
+    public function index(SongRepository $songRepository, TokenStorageInterface $tokenStorage): Response
     {
+        $token = $tokenStorage->getToken();
+        if (!$token || !$token->getUser()) {
+            $this->addFlash('error', 'You need to be logged in to access this resource');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         return $this->render('song/index.html.twig', [
             'songs' => $songRepository->findAll(),
         ]);
     }
 
     #[Route('/new', name: 'app_song_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new (Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger,TokenStorageInterface $tokenStorage): Response
     {
+        $token = $tokenStorage->getToken();
+        if (!$token || !$token->getUser()) {
+            $this->addFlash('error', 'You need to be logged in to access this resource');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $song = new Song();
         $form = $this->createForm(SongType::class, $song);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form-> get('image_path')->getData();
+            $imageFile = $form->get('image_path')->getData();
 
-            if($imageFile){
+            if ($imageFile) {
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
-            
-            try {
-                $imageFile->move(
-                    $this->getParameter('image_directory'),
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                // ... handle exception if something happens during file upload
+                try {
+                    $imageFile->move(
+                        $this->getParameter('image_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    // ... handle exception if something happens during file upload
+                }
+                $song->setImagePath($newFilename);
             }
-            $song->setImagePath($newFilename);
-        }
 
             $entityManager->persist($song);
             $entityManager->flush();
             flash()->addSuccess("Song added successfully");
             return $this->redirectToRoute('app_song_index', [], Response::HTTP_SEE_OTHER);
         }
+        $token = $tokenStorage->getToken();
+        if (!$token || !$token->getUser()) {
+            $this->addFlash('error', 'You need to be logged in to access this resource');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
         return $this->render('song/new.html.twig', [
             'song' => $song,
@@ -73,7 +95,7 @@ class SongController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_song_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Song $song, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Song $song, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
     {
         $form = $this->createForm(SongType::class, $song);
         $form->handleRequest($request);
@@ -83,6 +105,13 @@ class SongController extends AbstractController
 
             return $this->redirectToRoute('app_song_index', [], Response::HTTP_SEE_OTHER);
         }
+        $token = $tokenStorage->getToken();
+        if (!$token || !$token->getUser()) {
+            $this->addFlash('error', 'You need to be logged in to access this resource');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
         return $this->render('song/edit.html.twig', [
             'song' => $song,
@@ -91,13 +120,19 @@ class SongController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_song_delete', methods: ['POST'])]
-    public function delete(Request $request, Song $song, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Song $song, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorage): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$song->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $song->getId(), $request->request->get('_token'))) {
             $entityManager->remove($song);
             $entityManager->flush();
         }
+        $token = $tokenStorage->getToken();
+        if (!$token || !$token->getUser()) {
+            $this->addFlash('error', 'You need to be logged in to access this resource');
+            return $this->redirectToRoute('app_login');
+        }
 
+        $this->denyAccessUnlessGranted('ROLE_USER');
         return $this->redirectToRoute('app_song_index', [], Response::HTTP_SEE_OTHER);
     }
 }
