@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Song;
 use App\Form\SongType;
+use App\Repository\CategorieRepository;
 use App\Repository\SongRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +19,7 @@ class SongController extends AbstractController
 {
 
     #[Route('/', name: 'app_song_index', methods: ['GET'])]
-    public function index(SongRepository $songRepository, TokenStorageInterface $tokenStorage): Response
+    public function index(SongRepository $songRepository, CategorieRepository $categoryRepository, Request $request, TokenStorageInterface $tokenStorage): Response
     {
         $token = $tokenStorage->getToken();
         if (!$token || !$token->getUser()) {
@@ -28,13 +29,34 @@ class SongController extends AbstractController
 
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        // Récupérer toutes les catégories
+        $categories = $categoryRepository->findAll();
+
+        // Initialiser la variable $category à null
+        $category = null;
+
+        // Vérifier si une catégorie a été sélectionnée via l'URL
+        $categoryId = $request->query->get('category');
+        if ($categoryId) {
+            // Récupérer la catégorie sélectionnée
+            $category = $categoryRepository->find($categoryId);
+
+            // Filtrer les chansons par catégorie
+            $songs = $songRepository->findBy(['categorie' => $category]);
+        } else {
+            // Récupérer toutes les chansons si aucune catégorie n'est sélectionnée
+            $songs = $songRepository->findAll();
+        }
+
         return $this->render('song/index.html.twig', [
-            'songs' => $songRepository->findAll(),
+            'songs' => $songs,
+            'categories' => $categories,
+            'category' => $category,
         ]);
     }
 
     #[Route('/new', name: 'app_song_new', methods: ['GET', 'POST'])]
-    public function new (Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger,TokenStorageInterface $tokenStorage): Response
+    public function new (Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, TokenStorageInterface $tokenStorage): Response
     {
         $token = $tokenStorage->getToken();
         if (!$token || !$token->getUser()) {
