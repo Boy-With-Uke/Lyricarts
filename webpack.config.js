@@ -24,6 +24,7 @@ Encore
     .addEntry('root', './assets/styles/root.scss')
     .addEntry('auth', './assets/auth.js')
     .addEntry('main', './assets/main.js')
+    .addEntry('form', './assets/form.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

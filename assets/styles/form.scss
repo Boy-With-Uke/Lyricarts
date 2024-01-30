@@ -1,0 +1,44 @@
+@import "~bootstrap/scss/bootstrap";
+
+@import url("https://fonts.cdnfonts.com/css/avenir");
+@font-face {
+  font-family: "Renitah";
+  src: url("/public/fonts/Renitah.woff") format("woff");
+  /* Ajoutez d'autres formats si nécessaire */
+  font-weight: normal;
+  font-style: normal;
+}
+
+html,
+body {
+  /*display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;*/
+  min-height: 100vh;
+  margin: 0;
+  border: none;
+  background-image: url("/public/images/background-image.jpg");
+  background-size: cover;
+  background-position: fill;
+  background-repeat: no-repeat;
+  font-family: "Avenir", sans-serif;
+  color: white;
+}
+
+button {
+    background-color: white;
+    color: black;
+    font-size: 1.5em;
+    border: 2px solid white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .container{
+    padding: 10px;
+    background-color: transparent;
+    backdrop-filter: blur(15px);
+    border: solid 0.5px white;
+    border-radius: 5px;
+  }

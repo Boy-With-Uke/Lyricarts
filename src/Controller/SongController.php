@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Song;
 use App\Form\SongType;
+use App\Repository\AuthorRepository;
 use App\Repository\CategorieRepository;
 use App\Repository\SongRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,11 +20,11 @@ class SongController extends AbstractController
 {
 
     #[Route('/', name: 'app_song_index', methods: ['GET'])]
-    public function index(SongRepository $songRepository, CategorieRepository $categoryRepository, Request $request, TokenStorageInterface $tokenStorage): Response
+    public function index(SongRepository $songRepository, CategorieRepository $categoryRepository, Request $request, TokenStorageInterface $tokenStorage, AuthorRepository $authorRepository): Response
     {
         $token = $tokenStorage->getToken();
         if (!$token || !$token->getUser()) {
-            $this->addFlash('error', 'You need to be logged in to access this resource');
+            flash()->addError('You need to be logged in to access this resource');
             return $this->redirectToRoute('app_login');
         }
 
@@ -31,9 +32,12 @@ class SongController extends AbstractController
 
         // Récupérer toutes les catégories
         $categories = $categoryRepository->findAll();
-
-        // Initialiser la variable $category à null
+        $authors = $authorRepository->findAll();
+        $author = null;
         $category = null;
+
+        // Initialiser la variable $songs avec toutes les chansons
+        $songs = $songRepository->findAll();
 
         // Vérifier si une catégorie a été sélectionnée via l'URL
         $categoryId = $request->query->get('category');
@@ -43,13 +47,30 @@ class SongController extends AbstractController
 
             // Filtrer les chansons par catégorie
             $songs = $songRepository->findBy(['categorie' => $category]);
-        } else {
-            // Récupérer toutes les chansons si aucune catégorie n'est sélectionnée
-            $songs = $songRepository->findAll();
+
+            // Récupérer le nom de la catégorie sélectionnée
+            $categoryName = $category->getName();
+
+            // Définir un flash message avec le nom de la catégorie sélectionnée
+        flash()->addInfo('Getting all the songs form '.$categoryName.' category');
+        }
+
+        $authorId = $request->query->get('author');
+        if ($authorId) {
+            $author = $authorRepository->find($authorId);
+
+            // Filtrer les chansons par auteur
+            $songs = $songRepository->findBy(['author' => $author]);
+
+            $authorName = $author->getName();
+            flash()->addInfo('Getting all the songs form the author '.$authorName);
+
         }
 
         return $this->render('song/index.html.twig', [
             'songs' => $songs,
+            'authors' => $authors,
+            'author' => $author,
             'categories' => $categories,
             'category' => $category,
         ]);
@@ -60,7 +81,7 @@ class SongController extends AbstractController
     {
         $token = $tokenStorage->getToken();
         if (!$token || !$token->getUser()) {
-            $this->addFlash('error', 'You need to be logged in to access this resource');
+            flash()->addError('You need to be logged in to access this resource');
             return $this->redirectToRoute('app_login');
         }
 
@@ -96,7 +117,7 @@ class SongController extends AbstractController
         }
         $token = $tokenStorage->getToken();
         if (!$token || !$token->getUser()) {
-            $this->addFlash('error', 'You need to be logged in to access this resource');
+            flash()->addError('You need to be logged in to access this resource');
             return $this->redirectToRoute('app_login');
         }
 
@@ -129,7 +150,7 @@ class SongController extends AbstractController
         }
         $token = $tokenStorage->getToken();
         if (!$token || !$token->getUser()) {
-            $this->addFlash('error', 'You need to be logged in to access this resource');
+            flash()->addError('You need to be logged in to access this resource');
             return $this->redirectToRoute('app_login');
         }
 

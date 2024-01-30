@@ -24,10 +24,23 @@ body {
   background-repeat: no-repeat;
   font-family: "Avenir", sans-serif;
 }
-#brand{
-  font-family: "Renitah";
-  font-size: 70px;
+
+
+
+
+
+#div-brand {
+  min-width: 25%;
+  background: red;
+  margin-right: 25%;
+}
+
+
+#brand {
+  top: -40px;
   position: absolute;
+  height: 150px;
+  width: 250px;
 }
 .container {
   width: 95%;
@@ -45,11 +58,13 @@ body {
 .card {
   background: transparent;
   backdrop-filter: blur(15px);
-  margin-top: 1rem;
+  margin-top: 2rem;
   text-align: center;
   border-radius: 10px;
   border: solid rgb(211, 211, 211);
   transition: all 0.3s ease;
+  font-family: 'Avenir';
+  color: white;
 }
 
 .card:hover {
@@ -73,7 +88,7 @@ body {
 }
 
 .navbar {
-top: 30px;
+  top: 30px;
   min-height: 60px;
   width: 95%;
   max-width: 2000px; /* ajustez cette valeur en fonction de la largeur maximale souhaitée */
@@ -98,53 +113,60 @@ top: 30px;
     background-color: transparent;
     backdrop-filter: blur(15px);
 
-    .dropdown {
-      position: relative;
-      background: transparent;
-      backdrop-filter: blur(15px);
+    .navbar-toggler {
+      margin-left: 50%;
+      color: white;
 
-      .btn-secondary {
-        color: #fff;
-        border: none;
-        background: transparent;
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        transition: background-color 0.3s ease;
 
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-        }
-      }
-
-      .dropdown-menu {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        z-index: 1000;
-        border: none;
-        border-radius: 0;
-        margin: 0;
-        padding: 0;
+      .dropdown {
+        position: relative;
         background: transparent;
         backdrop-filter: blur(15px);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-        li {
-          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        .btn-secondary {
+          color: #fff;
+          border: none;
+          background: transparent;
+          padding: 0.5rem 1rem;
+          font-size: 1rem;
+          transition: background-color 0.3s ease;
 
-          &:last-child {
-            border-bottom: none;
+          &:hover {
+            background-color: rgb(0, 255, 128);
           }
+        }
 
-          a {
-            display: block;
-            padding: 0.5rem 1rem;
-            color: #333;
-            font-size: 0.9rem;
+        .dropdown-menu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          z-index: 1000;
+          border: none;
+          border-radius: 0;
+          margin: 0;
+          padding: 0;
+          background: transparent;
+          backdrop-filter: blur(15px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-            &:hover {
-              background-color: rgba(0, 0, 0, 0.05);
+          li {
+            border-bottom: 1px solid rgb(211, 211, 211);
+            
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            a {
+              display: block;
+              padding: 0.5rem 1rem;
+              color: rgb(211, 211, 211);
+              font-size: 0.9rem;
+
+              &:hover {
+                background-color: rgb(255, 0, 0)
+              }
             }
           }
         }
@@ -153,16 +175,47 @@ top: 30px;
   }
 }
 
-a,li {
+a,
+li {
   text-decoration: none;
   font-family: "Avenir";
   color: #fff;
 }
-#navbarNav{
-  padding-left: 38rem;
+// #navbarNav {
+//   padding-left: 78rem;
+// }
+#logout {
+  margin-left: 10px;
+}
+.navbar-nav{
+  background-color: transparent;
+  border: 2px solid white;
+  border-radius: 5px;
+  margin: 7px 5px;
+  color: white;
+
+}
+.dropdown-toggle{
+    color: #fff;
+  }
+.dropdown-toggle:hover{
+  color: grey;
+}
+#div-username{
+  margin-top: 15px;
+  color: white;
+  font-family: 'Renitah';
+  font-size: 2rem;
+  margin-left: 5px;
 }
 #logout{
-  margin-left: 10px;
+  color: red;
+  margin-right: auto;
+
+}
+.form-control{
+  width: 80%;
+  min-width: 50%;
 }
 
 /**************************************V4*******************************************************/
